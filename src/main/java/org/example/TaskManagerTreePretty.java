@@ -154,58 +154,60 @@ public class TaskManagerTreePretty extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new TaskManagerTreePretty());
     }
-}
 
-// 커스텀 셀 렌더러로 작업 상태와 글꼴, 색상 등을 조정
-class TaskTreeCellRenderer extends DefaultTreeCellRenderer {
-    @Override
-    public Component getTreeCellRendererComponent(JTree tree, Object value,
-                                                  boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-        Component comp = super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
-        if(value instanceof DefaultMutableTreeNode){
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
-            Object userObj = node.getUserObject();
-            if(userObj instanceof Task){
-                Task task = (Task) userObj;
-                String text = task.isFinished() ? "[완료] " : "";
-                text += task.getName();
-                setText(text);
-                if(task.isFinished()){
-                    setForeground(Color.GRAY);
-                    setFont(getFont().deriveFont(Font.ITALIC));
-                } else {
-                    setForeground(Color.BLACK);
-                    setFont(getFont().deriveFont(Font.PLAIN));
+
+    // 커스텀 셀 렌더러로 작업 상태와 글꼴, 색상 등을 조정
+    class TaskTreeCellRenderer extends DefaultTreeCellRenderer {
+        @Override
+        public Component getTreeCellRendererComponent(JTree tree, Object value,
+                                                      boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+            Component comp = super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
+            if(value instanceof DefaultMutableTreeNode){
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
+                Object userObj = node.getUserObject();
+                if(userObj instanceof Task){
+                    Task task = (Task) userObj;
+                    String text = task.isFinished() ? "[완료] " : "";
+                    text += task.getName();
+                    setText(text);
+                    if(task.isFinished()){
+                        setForeground(Color.GRAY);
+                        setFont(getFont().deriveFont(Font.ITALIC));
+                    } else {
+                        setForeground(Color.BLACK);
+                        setFont(getFont().deriveFont(Font.PLAIN));
+                    }
                 }
             }
+            return comp;
         }
-        return comp;
-    }
-}
 
-// Task 클래스 (작업명, 설명, 레벨, 완료 여부)
-class Task {
-    private String name;
-    private String description;
-    private int level; // 루트 작업은 0, 하위 작업은 부모 level + 1
-    private boolean finished;
-
-    public Task(String name, int level) {
-        this.name = name;
-        this.level = level;
-        this.description = "";
-        this.finished = false;
     }
 
-    public String getName() { return name; }
-    public int getLevel() { return level; }
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-    public boolean isFinished() { return finished; }
-    public void setFinished(boolean finished) { this.finished = finished; }
+    // Task 클래스 (작업명, 설명, 레벨, 완료 여부)
+    public static class Task {
+        private String name;
+        private String description;
+        private int level; // 루트 작업은 0, 하위 작업은 부모 level + 1
+        private boolean finished;
 
-    @Override
-    public String toString() {
-        return name;
+        public Task(String name, int level) {
+            this.name = name;
+            this.level = level;
+            this.description = "";
+            this.finished = false;
+        }
+
+        public String getName() { return name; }
+        public int getLevel() { return level; }
+        public String getDescription() { return description; }
+        public void setDescription(String description) { this.description = description; }
+        public boolean isFinished() { return finished; }
+        public void setFinished(boolean finished) { this.finished = finished; }
+
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 }
